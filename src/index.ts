@@ -1,5 +1,6 @@
 import express from 'express';
 import { Server } from 'http';
+import { ExpressPeerServer } from 'peer';
 import socketIO from 'socket.io';
 import Tracer from 'tracer';
 import morgan from 'morgan';
@@ -16,6 +17,10 @@ const io = socketIO(server);
 
 const playerIds = new Map<string, number>();
 
+const peerServer = ExpressPeerServer(server, {
+	path: '/crewlink'
+});
+
 interface Signal {
 	data: string;
 	to: string;
@@ -23,6 +28,7 @@ interface Signal {
 
 app.use(morgan('combined'))
 app.use(express.static('offsets'))
+app.use('/peerjs', peerServer);
 
 let connectionCount = 0;
 
